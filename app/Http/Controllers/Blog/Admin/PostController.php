@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\Blog\Admin;
-
+use Illuminate\Support\Facades\Bus;
+use App\Jobs\BlogPostAfterCreateJob;
+use App\Jobs\BlogPostAfterDeleteJob;
 use App\Models\BlogPost;
 use App\Http\Requests\BlogPostCreateRequest;
 use App\Repositories\BlogPostRepository;
@@ -62,7 +64,8 @@ class PostController extends BaseController
 
         $item = (new BlogPost())->create($data); //створюємо об'єкт і додаємо в БД
 
-        if ($item) {
+        if ($item) {$job = new BlogPostAfterCreateJob($item);
+            $this->dispatch($job);
             return redirect()
                 ->route('blog.admin.posts.edit', [$item->id])
                 ->with(['success' => 'Успішно збережено']);
@@ -143,11 +146,12 @@ class PostController extends BaseController
      */
     public function destroy($id)
     {
-        $result = BlogPost::destroy($id); //софт деліт, запис лишається
-
-        //$result = BlogPost::find($id)->forceDelete(); //повне видалення з БД
+        $result = BlogPost::destroy($id);
 
         if ($result) {
+            $job = new BlogPostAfterDeleteJob($id);
+            dispatch($job);
+
             return redirect()
                 ->route('blog.admin.posts.index')
                 ->with(['success' => "Запис id[$id] видалено"]);
@@ -156,4 +160,5 @@ class PostController extends BaseController
                 ->withErrors(['msg' => 'Помилка видалення']);
         }
     }
+
 }
