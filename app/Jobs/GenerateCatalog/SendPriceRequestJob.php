@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\GenerateCatalog;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -9,7 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class ProcessVideoJob implements ShouldQueue
+class SendPriceRequestJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -32,20 +32,4 @@ class ProcessVideoJob implements ShouldQueue
     {
         //
     }
-
-
-namespace App\Jobs\GenerateCatalog;
-
-
-class GeneratePointsJob extends AbstractJob
-{
-
-    public function handle()
-    {
-        //$f = 1 / 0; //симулюємо помилку
-
-        parent::handle();
-    }
-
-}
 }

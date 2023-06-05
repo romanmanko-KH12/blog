@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\GenerateCatalog;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class ProcessVideoJob implements ShouldQueue
+class AbstractJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -20,7 +19,7 @@ class ProcessVideoJob implements ShouldQueue
      */
     public function __construct()
     {
-        //
+        $this->onQueue('generate-catalog'); //черга по замовчанню
     }
 
     /**
@@ -30,22 +29,13 @@ class ProcessVideoJob implements ShouldQueue
      */
     public function handle()
     {
-        //
+        $this->debug('done');
     }
 
-
-namespace App\Jobs\GenerateCatalog;
-
-
-class GeneratePointsJob extends AbstractJob
-{
-
-    public function handle()
+    protected function debug (string $msg)
     {
-        //$f = 1 / 0; //симулюємо помилку
-
-        parent::handle();
+        $class = static::class;
+        $msg = $msg . " [{$class}]";
+        \Log::info($msg);
     }
-
-}
 }
